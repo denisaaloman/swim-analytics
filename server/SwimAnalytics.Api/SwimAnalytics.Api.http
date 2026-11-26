@@ -1,0 +1,11 @@
+@SwimAnalytics.Api_HostAddress = http://localhost:5130
+
+GET {{SwimAnalytics.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{SwimAnalytics.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SwimAnalytics.Api/SwimAnalytics.Api.csproj" />
+  <Project Path="SwimAnalytics.Application/SwimAnalytics.Application.csproj" />
+  <Project Path="SwimAnalytics.Data/SwimAnalytics.Data.csproj" />
+  <Project Path="SwimAnalytics.Domain/SwimAnalytics.Domain.csproj" />
+</Solution>
