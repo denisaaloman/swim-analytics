@@ -1,0 +1,69 @@
+<a routerLink="/swimmers">← Înapoi</a>
+<h2>Rezultat nou</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <fieldset>
+    <legend>Înotător</legend>
+
+    @if (swimmer(); as s) {
+      <p>
+        <strong>{{ s.lastName }} {{ s.firstName }}</strong> ({{ s.clubName ?? 'fără club' }})
+        <button type="button" (click)="clearSwimmer()">Schimbă</button>
+      </p>
+    } @else {
+      <input type="text" [formControl]="swimmerSearch" placeholder="Caută după nume (min. 2 litere)..." />
+      <ul>
+        @for (o of swimmerOptions(); track o.id) {
+          <li>
+            <button type="button" (click)="pickSwimmer(o)">
+              {{ o.lastName }} {{ o.firstName }} · {{ o.clubName ?? '-' }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </fieldset>
+
+  <label>
+    Probă
+    <select formControlName="eventId">
+      <option [ngValue]="null" disabled>Alege proba</option>
+      @for (e of events(); track e.id) {
+        <option [ngValue]="e.id">{{ eventLabel(e) }}</option>
+      }
+    </select>
+  </label>
+
+  <label>
+    Competiție
+    <select formControlName="meetId">
+      <option [ngValue]="null" disabled>Alege competiția</option>
+      @for (m of meets(); track m.id) {
+        <option [ngValue]="m.id">{{ m.name }} · {{ m.date }} · {{ poolLabel(m.poolLength) }}</option>
+      }
+    </select>
+  </label>
+
+  <label>
+    Timp final
+    <input type="text" formControlName="time" placeholder="ex: 55.23 sau 1:55.40" />
+  </label>
+
+  @if (splits.length > 0) {
+    <fieldset formArrayName="splits">
+      <legend>Timpi intermediari (opțional, timp cumulat)</legend>
+      @for (group of splits.controls; track $index; let i = $index) {
+        <label [formGroupName]="i">
+          {{ group.controls.distance.value }}m
+          <input type="text" formControlName="time" placeholder="ex: 26.10" />
+        </label>
+      }
+    </fieldset>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <button type="submit" [disabled]="saving()">{{ saving() ? 'Se salvează...' : 'Salvează' }}</button>
+</form>

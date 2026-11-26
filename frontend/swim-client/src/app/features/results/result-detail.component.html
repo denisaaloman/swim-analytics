@@ -1,0 +1,52 @@
+@if (loading()) {
+  <p>Se încarcă...</p>
+}
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (result(); as r) {
+  <a [routerLink]="['/swimmers', r.swimmerId]">← {{ r.swimmerName }}</a>
+
+  <h2>{{ eventLabel(r.distanceMeters, r.stroke) }} ({{ r.gender === 'Male' ? 'M' : 'F' }})</h2>
+  <p>{{ r.meetName }} · {{ r.meetDate }} · bazin {{ poolLabel(r.poolLength) }}</p>
+
+  <p class="big-time">{{ formatTime(r.timeMs) }}</p>
+
+  @if (points(); as p) {
+    <p><strong>{{ p.points }}</strong> puncte World Aquatics (timp de bază {{ formatTime(p.baseTimeMs) }})</p>
+  } @else {
+    <p>Nu există un timp de bază pentru această probă, deci nu pot calcula punctele.</p>
+  }
+
+  <h3>Pacing</h3>
+
+  @if (pacing(); as pc) {
+    <p>{{ profileLabel(pc.profile) }}</p>
+    <p>
+      Prima jumătate: {{ formatTime(pc.firstHalfMs) }} · A doua: {{ formatTime(pc.secondHalfMs) }}
+      ({{ pc.differencePercent | number: '1.0-2' }}%)
+    </p>
+
+    <app-pacing-chart [segments]="pc.segments" />
+
+    <table>
+      <thead>
+        <tr><th>Segment</th><th>Timp segment</th><th>Cumulat</th><th>Ritm / 50m</th></tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.toMeters) {
+          <tr>
+            <td>{{ row.fromMeters }}-{{ row.toMeters }}m</td>
+            <td>{{ formatTime(row.timeMs) }}</td>
+            <td>{{ formatTime(row.cumulativeMs) }}</td>
+            <td>{{ formatTime(row.per50Ms) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p>Rezultatul nu are timpi intermediari (splits), deci nu există analiză de pacing.</p>
+  }
+}

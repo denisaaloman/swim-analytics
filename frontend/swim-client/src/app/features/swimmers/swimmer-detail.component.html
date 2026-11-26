@@ -1,0 +1,64 @@
+<a routerLink="/swimmers">← Înapoi la listă</a>
+
+@if (loading()) {
+  <p>Se încarcă...</p>
+}
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (swimmer(); as s) {
+  <h2>{{ s.firstName }} {{ s.lastName }}</h2>
+  <p>{{ s.clubName ?? 'Fără club' }} · {{ s.gender }} · născut {{ s.birthDate }}</p>
+  <a routerLink="/results/new" [queryParams]="{ swimmerId: s.id }">Adaugă rezultat</a>
+
+  <h3>Recorduri personale</h3>
+
+  @if (bests().length === 0) {
+    <p>Nu are rezultate încă.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr><th>Probă</th><th>Bazin</th><th>Timp</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (pb of bests(); track pb.eventId + '-' + pb.poolLength) {
+          <tr [class.active]="pb === selected()">
+            <td>{{ label(pb) }}</td>
+            <td>{{ poolLabel(pb.poolLength) }}</td>
+            <td>{{ formatTime(pb.bestTimeMs) }}</td>
+            <td><button (click)="select(pb)">Vezi progresia</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (selected(); as sel) {
+    <h3>Progresie: {{ label(sel) }} ({{ poolLabel(sel.poolLength) }})</h3>
+
+    @if (progression().length > 0) {
+      <app-progression-chart [points]="progression()" />
+    }
+  }
+
+  <h3>Ultimele rezultate</h3>
+  <table>
+    <thead>
+      <tr><th>Data</th><th>Competiție</th><th>Probă</th><th>Bazin</th><th>Timp</th><th></th></tr>
+    </thead>
+    <tbody>
+      @for (r of results(); track r.id) {
+        <tr>
+          <td>{{ r.meetDate }}</td>
+          <td>{{ r.meetName }}</td>
+          <td>{{ eventLabel(r.distanceMeters, r.stroke) }}</td>
+          <td>{{ poolLabel(r.poolLength) }}</td>
+          <td>{{ formatTime(r.timeMs) }}</td>
+          <td><a [routerLink]="['/results', r.id]">Detalii</a></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

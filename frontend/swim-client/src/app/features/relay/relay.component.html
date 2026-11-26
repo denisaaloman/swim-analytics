@@ -1,0 +1,48 @@
+<h2>Ștafeta 4x100 mixt optimă</h2>
+
+<div class="filters">
+  <select (change)="onGenderChange($any($event.target).value)">
+    <option value="Male">Masculin</option>
+    <option value="Female">Feminin</option>
+  </select>
+
+  <select (change)="onPoolChange($any($event.target).value)">
+    <option value="Long">Bazin 50m</option>
+    <option value="Short">Bazin 25m</option>
+  </select>
+
+  <select (change)="onClubChange($any($event.target).value)">
+    <option value="">Toate cluburile</option>
+    @for (c of clubs(); track c.id) {
+      <option [value]="c.id">{{ c.name }}</option>
+    }
+  </select>
+</div>
+
+@if (loading()) {
+  <p>Se calculează...</p>
+}
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (relay(); as r) {
+  <table>
+    <thead>
+      <tr><th>Stil</th><th>Înotător</th><th>100m</th></tr>
+    </thead>
+    <tbody>
+      @for (leg of r.legs; track leg.stroke) {
+        <tr>
+          <td>{{ strokeLabel(leg.stroke) }}</td>
+          <td><a [routerLink]="['/swimmers', leg.swimmerId]">{{ leg.swimmerName }}</a></td>
+          <td>{{ formatTime(leg.timeMs) }}</td>
+        </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr><th colspan="2">Total</th><th>{{ formatTime(r.totalTimeMs) }}</th></tr>
+    </tfoot>
+  </table>
+}

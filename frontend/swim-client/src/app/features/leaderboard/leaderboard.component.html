@@ -1,0 +1,50 @@
+<h2>Clasament</h2>
+
+<div class="filters">
+  <select (change)="onEventChange($any($event.target).value)">
+    @for (e of events(); track e.id) {
+      <option [value]="e.id" [selected]="e.id === eventId()">{{ label(e) }}</option>
+    }
+  </select>
+
+  <select (change)="onPoolChange($any($event.target).value)">
+    <option value="Long" [selected]="pool() === 'Long'">Bazin 50m</option>
+    <option value="Short" [selected]="pool() === 'Short'">Bazin 25m</option>
+  </select>
+</div>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <p>Se încarcă...</p>
+}
+
+@if (data(); as d) {
+  @if (d.items.length === 0) {
+    <p>Nu există rezultate pentru această probă.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr><th>#</th><th>Înotător</th><th>Club</th><th>Timp</th></tr>
+      </thead>
+      <tbody>
+        @for (row of d.items; track row.swimmerId) {
+          <tr>
+            <td>{{ row.rank }}</td>
+            <td><a [routerLink]="['/swimmers', row.swimmerId]">{{ row.swimmerName }}</a></td>
+            <td>{{ row.clubName ?? '-' }}</td>
+            <td>{{ formatTime(row.bestTimeMs) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pager">
+      <button (click)="goTo(page() - 1)" [disabled]="page() === 1">Înapoi</button>
+      <span>Pagina {{ page() }} / {{ totalPages() }}</span>
+      <button (click)="goTo(page() + 1)" [disabled]="page() === totalPages()">Înainte</button>
+    </div>
+  }
+}

@@ -1,0 +1,35 @@
+<h2>Înotători</h2>
+
+<input type="text" [formControl]="search" placeholder="Caută după nume..." />
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <p>Se încarcă...</p>
+}
+
+@if (data(); as d) {
+  <table>
+    <thead>
+      <tr><th>Nume</th><th>Club</th><th>Gen</th><th>Data nașterii</th></tr>
+    </thead>
+    <tbody>
+      @for (s of d.items; track s.id) {
+        <tr>
+          <td><a [routerLink]="['/swimmers', s.id]">{{ s.lastName }} {{ s.firstName }}</a></td>
+          <td>{{ s.clubName ?? '-' }}</td>
+          <td>{{ s.gender }}</td>
+          <td>{{ s.birthDate }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="pager">
+    <button (click)="goTo(page() - 1)" [disabled]="page() === 1">Înapoi</button>
+    <span>Pagina {{ page() }} / {{ totalPages() }} ({{ d.totalCount }} rezultate)</span>
+    <button (click)="goTo(page() + 1)" [disabled]="page() === totalPages()">Înainte</button>
+  </div>
+}
