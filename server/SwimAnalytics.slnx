@@ -3,4 +3,5 @@
   <Project Path="SwimAnalytics.Application/SwimAnalytics.Application.csproj" />
   <Project Path="SwimAnalytics.Data/SwimAnalytics.Data.csproj" />
   <Project Path="SwimAnalytics.Domain/SwimAnalytics.Domain.csproj" />
+  <Project Path="SwimAnalytics.Tests/SwimAnalytics.Tests.csproj" />
 </Solution>
